@@ -2,7 +2,7 @@
 cmd = "pnpm install && pnpm run build"
 
 [deploy]
-startCommand = "pnpm run pm2"
+startCommand = "pnpm run prisma-generate && pnpm run prisma-db-push && pnpm run pm2"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 
