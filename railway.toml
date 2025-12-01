@@ -1,8 +1,8 @@
 [build]
-cmd = "DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy pnpm install --ignore-scripts && DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy pnpm run prisma-generate && pnpm run build"
+cmd = "pnpm install && pnpm run build"
 
 [deploy]
-startCommand = "pnpm run prisma-db-push && pnpm run pm2"
+startCommand = "pnpm run pm2"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 
