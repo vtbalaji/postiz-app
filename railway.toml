@@ -1,5 +1,5 @@
 [build]
-cmd = "pnpm install && pnpm run build"
+cmd = "DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy pnpm install && DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy pnpm run prisma-generate && pnpm run build"
 
 [deploy]
 startCommand = "pnpm run pm2"
