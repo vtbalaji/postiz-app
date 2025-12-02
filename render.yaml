@@ -1,0 +1,132 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: postiz-postgres
+    plan: starter
+    ipAllowList: []
+    databases:
+      - name: postiz_db
+        user: postiz_user
+        version: '15'
+
+  # Redis Cache
+  - type: redis
+    name: postiz-redis
+    plan: starter
+    ipAllowList: []
+    version: '7'
+
+  # Backend API Service
+  - type: web
+    name: postiz-backend
+    plan: starter
+    runtime: node
+    buildCommand: |
+      pnpm install --frozen-lockfile && pnpm run build:backend
+    startCommand: pnpm run --filter ./apps/backend start
+    ports:
+      - port: 3000
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postiz-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: postiz-redis
+          property: connectionString
+      - key: FRONTEND_URL
+        scope: build
+        sync: false
+      - key: NEXT_PUBLIC_BACKEND_URL
+        scope: build
+        sync: false
+      - key: BACKEND_INTERNAL_URL
+        scope: build
+        sync: false
+      - key: JWT_SECRET
+        scope: build
+        sync: false
+      # Add other required env vars below
+    autoDeploy: true
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'"
+    disk:
+      name: postiz-backend-disk
+      mountPath: /var/data
+      sizeGB: 10
+
+  # Frontend (Next.js) Service
+  - type: web
+    name: postiz-frontend
+    plan: starter
+    runtime: node
+    buildCommand: |
+      pnpm install --frozen-lockfile && pnpm run build:frontend
+    startCommand: pnpm run --filter ./apps/frontend start
+    ports:
+      - port: 4200
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_BACKEND_URL
+        scope: build
+        sync: false
+      - key: NEXT_PUBLIC_UPLOAD_STATIC_DIRECTORY
+        scope: build
+        sync: false
+      - key: FRONTEND_URL
+        scope: build
+        sync: false
+    autoDeploy: true
+    routes:
+      - path: /
+        destination: http://postiz-frontend:4200
+
+  # Cron Job Service
+  - type: cron
+    name: postiz-cron
+    schedule: "*/5 * * * *"
+    buildCommand: |
+      pnpm install --frozen-lockfile && pnpm run build:cron
+    startCommand: pnpm run --filter ./apps/cron start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postiz-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: postiz-redis
+          property: connectionString
+
+  # Workers Service
+  - type: web
+    name: postiz-workers
+    plan: starter
+    runtime: node
+    buildCommand: |
+      pnpm install --frozen-lockfile && pnpm run build:workers
+    startCommand: pnpm run --filter ./apps/workers start
+    ports:
+      - port: 3001
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postiz-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: postiz-redis
+          property: connectionString
+    autoDeploy: true
