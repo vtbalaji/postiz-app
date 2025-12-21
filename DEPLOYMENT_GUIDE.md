@@ -1,9 +1,15 @@
-# Postiz Deployment Guide - Railway & Vercel
+# Postiz Deployment Guide - Full Stack on Railway
 
 ## Overview
-This guide will help you deploy Postiz to Railway (backend) and Vercel (frontend).
+This guide will help you deploy the complete Postiz application (frontend + backend) to Railway.
 
 **Repository**: https://github.com/vtbalaji/postiz-app
+
+**Deployment Strategy**: Full Stack on Railway (Recommended - Simple & Cost-Effective)
+- ✅ Everything in one place
+- ✅ Backend, Frontend, Workers, Cron jobs
+- ✅ Simpler management
+- ✅ Lower cost than split deployment
 
 ---
 
@@ -17,7 +23,7 @@ This guide will help you deploy Postiz to Railway (backend) and Vercel (frontend
 
 ---
 
-## Deployment Option 1: Full Stack on Railway (Simpler)
+## Deployment Steps - Full Stack on Railway
 
 ### Step 1: Deploy to Railway
 
@@ -74,7 +80,9 @@ This guide will help you deploy Postiz to Railway (backend) and Vercel (frontend
 
 ---
 
-## Deployment Option 2: Split Deployment (Recommended for Production)
+## Alternative: Split Deployment (Advanced - Railway + Vercel)
+
+**Note**: This is an advanced option. Only use if you need Vercel's CDN for the frontend.
 
 ### Part A: Backend on Railway
 
@@ -199,6 +207,13 @@ For production, use Cloudflare R2 for media storage:
 - Changing this will cause dependency failures
 - Do not run `npm update react` or similar commands
 
+### ✅ Next.js Security Update
+**Next.js upgraded to 14.2.35** (from 14.2.30)
+- **Why**: Fixes Railway security vulnerabilities (CVE-2025-55184, CVE-2025-67779)
+- **Impact**: None - only security patches, no breaking changes
+- **Safe**: Patch version upgrade, fully backward compatible
+- All your components and code work exactly the same
+
 ### Database Migrations
 The deployment automatically runs `prisma-db-push` to update your database schema.
 
@@ -241,40 +256,51 @@ If PM2 fails to start:
 
 ---
 
-## Architecture Diagram
+## Architecture Diagram - Full Stack on Railway
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                          USERS                              │
-└─────────────────┬───────────────────────────────────────────┘
-                  │
-    ┌─────────────┴──────────────┐
-    │                            │
-    ▼                            ▼
-┌─────────────────┐    ┌──────────────────┐
-│  Vercel         │    │  Railway         │
-│  (Frontend)     │───▶│  (Backend)       │
-│  Next.js App    │    │  NestJS API      │
-└─────────────────┘    │  Workers         │
-                       │  Cron Jobs       │
-                       └────────┬─────────┘
-                                │
-                    ┌───────────┴───────────┐
-                    ▼                       ▼
-            ┌───────────────┐      ┌──────────────┐
-            │  PostgreSQL   │      │    Redis     │
-            │  (Railway)    │      │  (Railway)   │
-            └───────────────┘      └──────────────┘
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+              ┌───────────────────────┐
+              │      Railway          │
+              │  ┌─────────────────┐  │
+              │  │  Next.js        │  │
+              │  │  (Frontend)     │  │
+              │  └────────┬────────┘  │
+              │           │           │
+              │  ┌────────▼────────┐  │
+              │  │  NestJS API     │  │
+              │  │  (Backend)      │  │
+              │  └─────────────────┘  │
+              │           │           │
+              │  ┌────────▼────────┐  │
+              │  │  Workers        │  │
+              │  └─────────────────┘  │
+              │           │           │
+              │  ┌────────▼────────┐  │
+              │  │  Cron Jobs      │  │
+              │  └─────────────────┘  │
+              └───────────┬───────────┘
+                          │
+              ┌───────────┴───────────┐
+              ▼                       ▼
+      ┌───────────────┐      ┌──────────────┐
+      │  PostgreSQL   │      │    Redis     │
+      │  (Railway)    │      │  (Railway)   │
+      └───────────────┘      └──────────────┘
 ```
 
 ---
 
 ## Need Help?
 
-- Check Railway logs for backend issues
-- Check Vercel deployment logs for frontend issues
+- Check Railway logs: Dashboard → Your Service → Deployments → View Logs
 - Verify all environment variables are correctly set
 - Ensure React version hasn't changed (18.3.1)
+- Next.js should be at 14.2.35 (security patches applied)
 - Reference: `claude.md` for quick config reference
 
 ---
