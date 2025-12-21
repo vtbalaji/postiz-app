@@ -7,7 +7,8 @@ builder = "NIXPACKS"
 
 [deploy]
 # Start command - runs all services
-startCommand = "pnpm install && pnpm run prisma-db-push && pnpm run build && pnpm run pm2"
+# Increased Node memory to 4GB for build process
+startCommand = "NODE_OPTIONS='--max-old-space-size=4096' pnpm install && pnpm run prisma-db-push && NODE_OPTIONS='--max-old-space-size=4096' pnpm run build && pnpm run pm2"
 # Alternatively for individual services:
 # Backend only: startCommand = "pnpm install && pnpm run prisma-db-push && pnpm run build:backend && pnpm run start:prod:backend"
 
