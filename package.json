@@ -309,6 +309,9 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "bcrypt"
-    ]
+    ],
+    "overrides": {
+      "next": "14.2.35"
+    }
   }
 }
