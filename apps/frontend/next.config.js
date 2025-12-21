@@ -54,7 +54,22 @@ const nextConfig = {
     ];
   },
   async rewrites() {
+    const backendUrl = process.env.BACKEND_INTERNAL_URL || 'http://localhost:3000';
     return [
+      // Proxy all API calls to backend
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+      {
+        source: '/public/:path*',
+        destination: `${backendUrl}/public/:path*`,
+      },
+      {
+        source: '/stripe/:path*',
+        destination: `${backendUrl}/stripe/:path*`,
+      },
+      // Upload handling
       {
         source: '/uploads/:path*',
         destination:
