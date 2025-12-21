@@ -1,3 +1,16 @@
+# Railway Deployment Configuration for Postiz
+# This configuration sets up the environment for deploying Postiz to Railway
+
+[build]
+# Build command for Railway
+builder = "NIXPACKS"
+
+[deploy]
+# Start command - runs all services
+startCommand = "pnpm install && pnpm run prisma-db-push && pnpm run build && pnpm run pm2"
+# Alternatively for individual services:
+# Backend only: startCommand = "pnpm install && pnpm run prisma-db-push && pnpm run build:backend && pnpm run start:prod:backend"
+
 [phases.setup]
     nixPkgs = ['nodejs', 'python3']
     aptPkgs = ['build-essential', 'libudev-dev']
