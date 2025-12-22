@@ -66,18 +66,90 @@ const nextConfig = {
     console.log('BACKEND_INTERNAL_URL:', process.env.BACKEND_INTERNAL_URL);
     console.log('=== BACKEND DEBUG END ===');
     return [
-      // Proxy all API calls to backend (includes /api/auth/*)
+      // Proxy all API calls to backend
       {
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
+      },
+      {
+        source: '/agencies/:path*',
+        destination: `${backendUrl}/agencies/:path*`,
+      },
+      {
+        source: '/analytics/:path*',
+        destination: `${backendUrl}/analytics/:path*`,
+      },
+      {
+        source: '/autopost/:path*',
+        destination: `${backendUrl}/autopost/:path*`,
+      },
+      {
+        source: '/billing/:path*',
+        destination: `${backendUrl}/billing/:path*`,
+      },
+      {
+        source: '/copilot/:path*',
+        destination: `${backendUrl}/copilot/:path*`,
+      },
+      {
+        source: '/integrations/:path*',
+        destination: `${backendUrl}/integrations/:path*`,
+      },
+      {
+        source: '/marketplace/:path*',
+        destination: `${backendUrl}/marketplace/:path*`,
+      },
+      {
+        source: '/media/:path*',
+        destination: `${backendUrl}/media/:path*`,
+      },
+      {
+        source: '/messages/:path*',
+        destination: `${backendUrl}/messages/:path*`,
+      },
+      {
+        source: '/monitor/:path*',
+        destination: `${backendUrl}/monitor/:path*`,
+      },
+      {
+        source: '/notifications/:path*',
+        destination: `${backendUrl}/notifications/:path*`,
+      },
+      {
+        source: '/posts/:path*',
+        destination: `${backendUrl}/posts/:path*`,
       },
       {
         source: '/public/:path*',
         destination: `${backendUrl}/public/:path*`,
       },
       {
+        source: '/sets/:path*',
+        destination: `${backendUrl}/sets/:path*`,
+      },
+      {
+        source: '/settings/:path*',
+        destination: `${backendUrl}/settings/:path*`,
+      },
+      {
+        source: '/signatures/:path*',
+        destination: `${backendUrl}/signatures/:path*`,
+      },
+      {
         source: '/stripe/:path*',
         destination: `${backendUrl}/stripe/:path*`,
+      },
+      {
+        source: '/third-party/:path*',
+        destination: `${backendUrl}/third-party/:path*`,
+      },
+      {
+        source: '/user/:path*',
+        destination: `${backendUrl}/user/:path*`,
+      },
+      {
+        source: '/webhooks/:path*',
+        destination: `${backendUrl}/webhooks/:path*`,
       },
       // Upload handling
       {
