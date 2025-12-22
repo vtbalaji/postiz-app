@@ -57,6 +57,7 @@ async function start() {
 
   // Use BACKEND_PORT if set, otherwise fall back to PORT, then 3000
   // This allows frontend to use PORT for Railway, while backend uses BACKEND_PORT
+  // Force backend to always use port 3000 when PORT=4200 to avoid conflicts
   const port = process.env.BACKEND_PORT || (process.env.PORT !== '4200' ? process.env.PORT : null) || 3000;
 
   try {
