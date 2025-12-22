@@ -22,7 +22,7 @@ export const AfterActivate = () => {
   const loadCode = useCallback(async () => {
     if (params.code) {
       const { can } = await (
-        await fetch(`/auth/activate`, {
+        await fetch(`/api/auth/activate`, {
           method: 'POST',
           body: JSON.stringify({
             code: params.code,

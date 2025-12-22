@@ -14,7 +14,7 @@ export default async function Auth(params: {searchParams: {provider: string}}) {
   const t = await getT();
   if (process.env.DISABLE_REGISTRATION === 'true') {
     const canRegister = (
-      await (await internalFetch('/auth/can-register')).json()
+      await (await internalFetch('/api/auth/can-register')).json()
     ).register;
     if (!canRegister && !params?.searchParams?.provider) {
       return (

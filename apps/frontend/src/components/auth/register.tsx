@@ -110,7 +110,7 @@ export function RegisterAfter({
   const fetchData = useFetch();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
-    await fetchData('/auth/register', {
+    await fetchData('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({
         ...data,

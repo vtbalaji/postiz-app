@@ -25,7 +25,7 @@ export function Forgot() {
   const fetchData = useFetch();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
-    await fetchData('/auth/forgot', {
+    await fetchData('/api/auth/forgot', {
       method: 'POST',
       body: JSON.stringify({
         ...data,

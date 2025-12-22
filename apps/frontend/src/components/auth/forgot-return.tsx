@@ -31,7 +31,7 @@ export function ForgotReturn({ token }: { token: string }) {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
     const { reset } = await (
-      await fetchData('/auth/forgot-return', {
+      await fetchData('/api/auth/forgot-return', {
         method: 'POST',
         body: JSON.stringify({
           ...data,

@@ -5,7 +5,7 @@ export const GoogleProvider = () => {
   const fetch = useFetch();
   const t = useT();
   const gotoLogin = useCallback(async () => {
-    const link = await (await fetch('/auth/oauth/GOOGLE')).text();
+    const link = await (await fetch('/api/auth/oauth/GOOGLE')).text();
     window.location.href = link;
   }, []);
   return (

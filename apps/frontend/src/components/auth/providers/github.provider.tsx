@@ -5,7 +5,7 @@ export const GithubProvider = () => {
   const fetch = useFetch();
   const t = useT();
   const gotoLogin = useCallback(async () => {
-    const link = await (await fetch('/auth/oauth/GITHUB')).text();
+    const link = await (await fetch('/api/auth/oauth/GITHUB')).text();
     window.location.href = link;
   }, []);
   return (

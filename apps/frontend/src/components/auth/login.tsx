@@ -39,7 +39,7 @@ export function Login() {
   const fetchData = useFetch();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
-    const login = await fetchData('/auth/login', {
+    const login = await fetchData('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({
         ...data,
