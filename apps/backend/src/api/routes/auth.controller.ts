@@ -24,7 +24,7 @@ import { Provider } from '@prisma/client';
 import * as Sentry from '@sentry/nestjs';
 
 @ApiTags('Auth')
-@Controller('/auth')
+@Controller('/api/auth')
 export class AuthController {
   constructor(
     private _authService: AuthService,

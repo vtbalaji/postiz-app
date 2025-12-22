@@ -66,14 +66,10 @@ const nextConfig = {
     console.log('BACKEND_INTERNAL_URL:', process.env.BACKEND_INTERNAL_URL);
     console.log('=== BACKEND DEBUG END ===');
     return [
-      // Proxy all API calls to backend
+      // Proxy all API calls to backend (includes /api/auth/*)
       {
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
-      },
-      {
-        source: '/auth/:path*',
-        destination: `${backendUrl}/auth/:path*`,
       },
       {
         source: '/public/:path*',
