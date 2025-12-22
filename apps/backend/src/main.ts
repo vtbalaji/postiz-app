@@ -55,7 +55,9 @@ async function start() {
 
   loadSwagger(app);
 
-  const port = process.env.PORT || 3000;
+  // Use BACKEND_PORT if set, otherwise fall back to PORT, then 3000
+  // This allows frontend to use PORT for Railway, while backend uses BACKEND_PORT
+  const port = process.env.BACKEND_PORT || (process.env.PORT !== '4200' ? process.env.PORT : null) || 3000;
 
   try {
     await app.listen(port);
