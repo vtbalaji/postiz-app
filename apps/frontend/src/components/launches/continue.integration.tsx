@@ -20,6 +20,8 @@ export const ContinueIntegration: FC<{
 
   useEffect(() => {
     (async () => {
+      console.log(`[ContinueIntegration] Processing OAuth callback for provider=${provider}, searchParams=`, searchParams);
+
       const timezone = String(dayjs.tz().utcOffset());
       const modifiedParams = { ...searchParams };
       if (provider === 'x') {
@@ -38,36 +40,50 @@ export const ContinueIntegration: FC<{
         });
       }
 
-      const data = await fetch(`/integrations/social/${provider}/connect`, {
-        method: 'POST',
-        body: JSON.stringify({ ...modifiedParams, timezone }),
-      });
+      console.log(`[ContinueIntegration] Sending POST to /integrations/social/${provider}/connect with params:`, modifiedParams);
 
-      if (data.status === HttpStatusCode.PreconditionFailed) {
-        push(`/launches?precondition=true`);
-        return ;
-      }
+      try {
+        const data = await fetch(`/integrations/social/${provider}/connect`, {
+          method: 'POST',
+          body: JSON.stringify({ ...modifiedParams, timezone }),
+        });
 
-      if (data.status === HttpStatusCode.NotAcceptable) {
-        const { msg } = await data.json();
-        push(`/launches?msg=${msg}`);
-        return;
-      }
+        console.log(`[ContinueIntegration] Response status: ${data.status}`);
 
-      if (
-        data.status !== HttpStatusCode.Ok &&
-        data.status !== HttpStatusCode.Created
-      ) {
+        if (data.status === HttpStatusCode.PreconditionFailed) {
+          console.log(`[ContinueIntegration] Got PreconditionFailed`);
+          push(`/launches?precondition=true`);
+          return ;
+        }
+
+        if (data.status === HttpStatusCode.NotAcceptable) {
+          const { msg } = await data.json();
+          console.log(`[ContinueIntegration] Got NotAcceptable: ${msg}`);
+          push(`/launches?msg=${msg}`);
+          return;
+        }
+
+        if (
+          data.status !== HttpStatusCode.Ok &&
+          data.status !== HttpStatusCode.Created
+        ) {
+          console.error(`[ContinueIntegration] Error response: ${data.status}`, await data.text());
+          setError(true);
+          return;
+        }
+
+        const { inBetweenSteps, id } = await data.json();
+        console.log(`[ContinueIntegration] Success! inBetweenSteps=${inBetweenSteps}, id=${id}`);
+
+        if (inBetweenSteps && !searchParams.refresh) {
+          push(`/launches?added=${provider}&continue=${id}`);
+          return;
+        }
+        push(`/launches?added=${provider}&msg=Channel Updated`);
+      } catch (err) {
+        console.error(`[ContinueIntegration] Exception:`, err);
         setError(true);
-        return;
       }
-
-      const { inBetweenSteps, id } = await data.json();
-      if (inBetweenSteps && !searchParams.refresh) {
-        push(`/launches?added=${provider}&continue=${id}`);
-        return;
-      }
-      push(`/launches?added=${provider}&msg=Channel Updated`);
     })();
   }, [provider, searchParams]);
 
