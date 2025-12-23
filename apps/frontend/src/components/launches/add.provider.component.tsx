@@ -360,18 +360,31 @@ export const AddProviderComponent: FC<{
           return;
         };
         const gotoIntegration = async (externalUrl?: string) => {
-          const { url, err } = await (
-            await fetch(
-              `/integrations/social/${identifier}${
-                externalUrl ? `?externalUrl=${externalUrl}` : ``
-              }`
-            )
-          ).json();
-          if (err) {
+          console.log(`[AddProvider] Clicked on provider: ${identifier}`);
+          try {
+            const fetchUrl = `/integrations/social/${identifier}${
+              externalUrl ? `?externalUrl=${externalUrl}` : ``
+            }`;
+            console.log(`[AddProvider] Fetching authorization URL from: ${fetchUrl}`);
+
+            const response = await fetch(fetchUrl);
+            console.log(`[AddProvider] Response status: ${response.status}`);
+
+            const { url, err } = await response.json();
+            console.log(`[AddProvider] Response body:`, { url: url?.substring(0, 50) + '...', err });
+
+            if (err) {
+              console.error(`[AddProvider] Error getting authorization URL`);
+              toaster.show('Could not connect to the platform', 'warning');
+              return;
+            }
+
+            console.log(`[AddProvider] Redirecting to LinkedIn authorization`);
+            window.location.href = url;
+          } catch (ex) {
+            console.error(`[AddProvider] Exception:`, ex);
             toaster.show('Could not connect to the platform', 'warning');
-            return;
           }
-          window.location.href = url;
         };
         if (isWeb3) {
           openWeb3();
