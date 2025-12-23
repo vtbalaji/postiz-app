@@ -375,6 +375,8 @@ export class IntegrationsController {
     @Param('integration') integration: string,
     @Body() body: ConnectIntegrationDto
   ) {
+    console.log(`OAuth callback received for ${integration}, state=${body.state}, code=${body.code?.substring(0, 10)}...`);
+
     if (
       !this._integrationManager
         .getAllowedSocialsIntegrations()
@@ -389,9 +391,13 @@ export class IntegrationsController {
     const getCodeVerifier = integrationProvider.customFields
       ? 'none'
       : await ioRedis.get(`login:${body.state}`);
+
     if (!getCodeVerifier) {
+      console.error(`No code verifier found for state: ${body.state}. Available states in Redis: unknown`);
       throw new Error('Invalid state');
     }
+
+    console.log(`OAuth callback: Found code verifier for state ${body.state}`);
 
     if (!integrationProvider.customFields) {
       await ioRedis.del(`login:${body.state}`);
