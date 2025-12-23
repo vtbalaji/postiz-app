@@ -63,6 +63,7 @@ async function start() {
   try {
     await app.listen(port);
 
+    logEnvironmentVariables(); // Log environment variables for debugging
     checkConfiguration(); // Do this last, so that users will see obvious issues at the end of the startup log without having to scroll up.
 
     Logger.log(`🚀 Backend is running on: http://localhost:${port}`);
@@ -85,6 +86,24 @@ function checkConfiguration() {
   } else {
     Logger.log('Configuration check completed without any issues');
   }
+}
+
+function logEnvironmentVariables() {
+  Logger.log('=== ENVIRONMENT VARIABLES (first 10 chars for security) ===');
+  const envVars = Object.keys(process.env)
+    .filter(key => !key.startsWith('npm_') && !key.startsWith('_'))
+    .sort();
+
+  for (const key of envVars) {
+    const value = process.env[key];
+    if (value) {
+      const displayValue = value.length > 10 ? value.substring(0, 10) + '***' : value;
+      Logger.log(`${key}=${displayValue}`);
+    } else {
+      Logger.log(`${key}=(empty)`);
+    }
+  }
+  Logger.log('=== END ENVIRONMENT VARIABLES ===');
 }
 
 start();
