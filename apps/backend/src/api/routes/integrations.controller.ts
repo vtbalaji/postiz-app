@@ -237,6 +237,7 @@ export class IntegrationsController {
 
       return { url };
     } catch (err) {
+      console.error(`OAuth URL generation failed for ${integration}:`, err);
       return { err: true };
     }
   }
